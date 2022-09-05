@@ -1,10 +1,10 @@
-import ssl
 from typing import List
 import asyncio
 import aiohttp
 
 SOURCE_URL = 'https://raw.githubusercontent.com/avito-tech/' \
     'python-trainee-assignment/main/matrix.txt'
+
 
 async def get_data(url: str) -> str:
     conn = aiohttp.TCPConnector()
@@ -22,21 +22,25 @@ def get_prepared_matrix(source: str) -> List[List[int]]:
     return output_matrix
 
 
-def get_traversal_matrix(matrix: List[List[int]]) -> List[int]:
-    pass
+def get_traversal_matrix(matrix: List[List[int]], output=[]) -> List[int]:
+    if not len(matrix):
+        return output
+    matrix = list(zip(*matrix[::-1]))
+    output.extend(matrix[0][::-1])
+    return get_traversal_matrix(matrix[1:], output)
 
 
 async def get_matrix(url: str) -> List[int]:
     text = await get_data(url)
     prepared_matrix = get_prepared_matrix(text)
-    return prepared_matrix
+    traversal_matrix = get_traversal_matrix(prepared_matrix)
+    return traversal_matrix
 
 
 def main():
-    text = asyncio.run(get_matrix(SOURCE_URL))
-    print(text)
+    result = asyncio.run(get_matrix(SOURCE_URL))
+    print(result)
 
 
 if __name__ == 'main':
     main()
-
