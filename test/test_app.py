@@ -20,8 +20,8 @@ PREPARED_MATRIX = [
 
 
 def test_get_prepared_matrix():
-    with open('fixtures/test_matrix.txt', 'r') as f:
-        text = f.open()
+    with open('test/fixtures/test_matrix.txt', 'r') as f:
+        text = f.read()
     assert get_prepared_matrix(text) == PREPARED_MATRIX
     assert get_prepared_matrix('') == []
 
