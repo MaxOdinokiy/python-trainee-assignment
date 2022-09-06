@@ -1,28 +1,42 @@
 from typing import List
+from aiohttp import web, ClientError
 import asyncio
 import aiohttp
+import logging
 
 SOURCE_URL = 'https://raw.githubusercontent.com/avito-tech/' \
     'python-trainee-assignment/main/matrix.txt'
 
+logger = logging.getLogger(__name__)
 
 async def get_data(url: str) -> str:
-    conn = aiohttp.TCPConnector()
-    async with aiohttp.ClientSession(connector=conn) as session:
-        async with session.get(url, ssl=False) as response:
-            text = await response.text()
-            return text
+    try:
+        conn = aiohttp.TCPConnector()
+        async with aiohttp.ClientSession(connector=conn) as session:
+            async with session.get(url, ssl=False) as response:
+                if 400 <= response.status < 500:
+                    logger.error("Client error")
+                elif response.status > 500:
+                    logger.error("server error")
+                else:
+                    return await response.text()
+    except ClientError as ex:
+        logger.error(f"There are problems with connection {ex}")
+    except TimeoutError as ex:
+        logger.error(f"Timeout error {ex}")
 
 
 def get_prepared_matrix(source: str) -> List[List[int]]:
-    output_matrix = []
-    for line in source.split('\n'):
-        if line and line[0] != '+':
-            output_matrix.append(
-                [int(num) for num in line[1:-1].replace(' ', '').split('|')]
-                )
+    try:
+        output_matrix = []
+        for line in source.split('\n'):
+            if line and line[0] != '+':
+                output_matrix.append(
+                    [int(num) for num in line[1:-1].replace(' ', '').split('|')]
+                    )
+    except AttributeError as ex:
+        logger.warning(ex)
     return output_matrix
-
 
 def get_traversal_matrix(matrix: List[List[int]]) -> List[int]:
     output = []
