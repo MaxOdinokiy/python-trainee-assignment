@@ -1,15 +1,15 @@
 from app.app import get_data, get_matrix, get_prepared_matrix, get_traversal_matrix
 import asyncio
 
-SOURCE_URL = 'https://raw.githubusercontent.com/avito-tech/ \
-    python-trainee-assignment/main/matrix.txt'
+SOURCE_URL = 'https://raw.githubusercontent.com/avito-tech/' \
+    'python-trainee-assignment/main/matrix.txt'
 
 TRAVERSAL = [
-        10, 50, 90, 130,
-        140, 150, 160, 120,
-        80, 40, 30, 20,
-        60, 100, 110, 70,
-    ]
+    10, 50, 90, 130,
+    140, 150, 160, 120,
+    80, 40, 30, 20,
+    60, 100, 110, 70,
+]
 
 PREPARED_MATRIX = [
     [10, 20, 30, 40],
@@ -31,4 +31,6 @@ def test_get_traversal_matrix():
 
 
 def test_get_matrix():
-    assert asyncio.run(get_matrix(SOURCE_URL)) == TRAVERSAL
+    result = asyncio.run(get_matrix(SOURCE_URL))
+    print(result)
+    assert result == TRAVERSAL

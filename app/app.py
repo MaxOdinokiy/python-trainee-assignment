@@ -18,16 +18,21 @@ def get_prepared_matrix(source: str) -> List[List[int]]:
     output_matrix = []
     for line in source.split('\n'):
         if line and line[0] != '+':
-            output_matrix.append([int(num) for num in line[1:-1].split('|')])
+            output_matrix.append(
+                [int(num) for num in line[1:-1].replace(' ', '').split('|')]
+                )
     return output_matrix
 
 
-def get_traversal_matrix(matrix: List[List[int]], output=[]) -> List[int]:
-    if not len(matrix):
-        return output
-    matrix = list(zip(*matrix[::-1]))
-    output.extend(matrix[0][::-1])
-    return get_traversal_matrix(matrix[1:], output)
+def get_traversal_matrix(matrix: List[List[int]]) -> List[int]:
+    output = []
+    def walk(matrix, output):
+        if not len(matrix):
+            return output
+        matrix = list(zip(*matrix[::-1]))
+        output.extend(matrix[0][::-1])
+        return walk(matrix[1:], output)
+    return walk(matrix, output)
 
 
 async def get_matrix(url: str) -> List[int]:
@@ -42,5 +47,5 @@ def main():
     print(result)
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     main()
